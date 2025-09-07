@@ -54,35 +54,47 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function handleSearch(query, options, sendResponse) {
   marker.unmark({
     done: () => {
-      const markOptions = {
-        caseSensitive: options.caseSensitive,
-        done: (count) => {
-          matches = document.querySelectorAll('mark');
-          currentIndex = matches.length > 0 ? 0 : -1;
-          if (currentIndex !== -1) {
-            scrollToElement(matches[currentIndex]);
-          }
-          sendResponse({ count: count, currentIndex: currentIndex !== -1 ? 1 : 0 });
-        }
-      };
+      const doneCallback = (totalCount) => {
+        const allFoundElements = Array.from(document.querySelectorAll('mark'));
+        const visibleMatches = allFoundElements.filter(el => el.offsetParent !== null);
+        const invisibleMatches = allFoundElements.filter(el => el.offsetParent === null);
 
-      if (options.useRegex) {
-        let regexQuery = query;
-        if (options.wholeWord) {
-          regexQuery = `\\b${query}\\b`;
+        invisibleMatches.forEach(el => {
+          el.replaceWith(...el.childNodes);
+        });
+
+        matches = visibleMatches;
+        currentIndex = matches.length > 0 ? 0 : -1;
+
+        if (currentIndex !== -1) {
+          scrollToElement(matches[currentIndex]);
         }
         
+        sendResponse({ count: matches.length, currentIndex: currentIndex !== -1 ? 1 : 0 });
+      };
+
+      // If "Match Whole Word" is ON, we ALWAYS use a regex approach for reliability.
+      if (options.wholeWord || options.useRegex) {
+        if (!options.useRegex) {
+          query = RegExp.escape(query);
+        }
+        if (options.wholeWord) {
+          query = `\\b${query}\\b`;
+        }
         try {
           const flags = 'g' + (options.caseSensitive ? '' : 'i');
-          const regex = new RegExp(regexQuery, flags);
-          marker.markRegExp(regex, markOptions);
+          const regex = new RegExp(query, flags);
+          marker.markRegExp(regex, { done: doneCallback });
         } catch (e) {
           console.error("Invalid Regex:", e);
           sendResponse({ count: 0 });
         }
       } else {
-        markOptions.separateWordSearch = options.wholeWord;
-        marker.mark(query, markOptions);
+        // If both are OFF, perform a simple substring search.
+        marker.mark(query, {
+          caseSensitive: options.caseSensitive,
+          done: doneCallback
+        });
       }
     }
   });

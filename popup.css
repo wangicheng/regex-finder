@@ -1,87 +1,146 @@
-/* --- Global Dark Mode Styles --- */
-body {
-  width: 300px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  padding: 10px;
-  background-color: #202124; /* Main background color (dark gray) */
-  color: #e8eaed; /* Main text color (light gray) */
+:root {
+  --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --color-bg-primary: #202124;
+  --color-bg-secondary: #303134;
+  --color-bg-hover: #3c4043;
+  
+  --color-text-primary: #e8eaed;
+  --color-text-secondary: #9aa0a6;
+  --color-icon-default: #bdc1c6;
+
+  --color-border-primary: #5f6368;
+  --color-accent: #8ab4f8;
+  --color-accent-bg: rgba(138, 180, 248, 0.15);
+  --color-accent-shadow: rgba(138, 180, 248, 0.2);
+
+  --ui-width: 300px;
+  --ui-padding: 10px;
+  --control-height: 32px;
+  --border-radius: 5px;
+  --spacing-xs: 4px;
+  --spacing-sm: 6px;
+  --spacing-md: 8px;
 }
 
-/* --- Search Input Box --- */
-.search-container input {
-  width: 95%;
-  padding: 8px;
-  margin-bottom: 8px;
-  background-color: #303134; /* Input box background color */
-  border: 1px solid #5f6368; /* Border color */
-  border-radius: 5px;
-  color: #e8eaed; /* Input text color */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  width: var(--ui-width);
+  padding: var(--ui-padding);
+  font-family: var(--font-family-system);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.search-bar {
+  position: relative;
+  margin-bottom: var(--spacing-md);
+}
+
+#searchInput {
+  width: 100%;
+  height: 36px;
+  padding: var(--spacing-md);
+  padding-right: 30px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius);
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
-/* Placeholder text style */
-.search-container input::placeholder {
-  color: #9aa0a6; /* Placeholder text color (a darker gray) */
+#searchInput::placeholder {
+  color: var(--color-text-secondary);
 }
 
-/* Input box focus style */
-.search-container input:focus {
+#searchInput:focus {
   outline: none;
-  border-color: #8ab4f8; /* Border color in focused state (blue highlight) */
-  box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.2);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-shadow);
 }
 
-/* --- Icon Buttons --- */
-.options-container {
+.controls-container {
   display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.options-container button {
-  width: 36px;
-  height: 32px;
-  margin-right: 6px;
-  padding: 0;
-  background-color: #303134; /* Button background color */
-  border: 1px solid #5f6368; /* Button border */
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+.button-group {
   display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn {
+  display: inline-flex;
   justify-content: center;
   align-items: center;
+  height: var(--control-height);
+  width: 36px;
+  padding: 0;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
-.options-container button svg {
+.btn svg {
   width: 20px;
   height: 20px;
-  color: #bdc1c6; /* Default icon color (medium gray) */
+  color: var(--color-icon-default);
   transition: color 0.2s;
 }
 
-.options-container button:hover {
-  background-color: #3c4043; /* Background color on hover */
+.btn:hover {
+  background-color: var(--color-bg-hover);
 }
 
-/* Active button style */
-.options-container button.active {
-  background-color: rgba(138, 180, 248, 0.15); /* Active state background color (semi-transparent blue) */
-  border-color: #8ab4f8; /* Active state border color (blue highlight) */
+.btn.active {
+  background-color: var(--color-accent-bg);
+  border-color: var(--color-accent);
 }
 
-.options-container button.active svg {
-  color: #8ab4f8; /* Active state icon color (blue highlight) */
+.btn.active svg {
+  color: var(--color-accent);
 }
 
-/* --- NEW RULE TO MOVE THE SETTINGS BUTTON --- */
+.btn-icon {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-xs);
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+}
+
+#clearBtn {
+  display: none;
+}
+
+#clearBtn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary);
+}
+
+#clearBtn:hover svg {
+  color: var(--color-text-primary);
+}
+
 #optionsBtn {
-  margin-left: auto; /* Pushes the button to the right */
-  margin-right: 0;   /* Removes the default right margin */
+  margin-left: auto;
 }
 
-/* --- Results and Separator --- */
 #resultsCount {
   margin-top: 10px;
   font-size: 14px;
   min-height: 1.2em;
-  color: #9aa0a6; /* Results count text color */
+  color: var(--color-text-secondary);
 }

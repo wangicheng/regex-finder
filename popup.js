@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearBtn');
   const caseBtn = document.getElementById('caseBtn');
   const wordBtn = document.getElementById('wordBtn');
   const regexBtn = document.getElementById('regexBtn');
@@ -14,11 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
     useRegex: false
   };
 
-  // Load saved settings
-  chrome.storage.local.get(['searchOptions'], (result) => {
+  // Load saved settings and query
+  chrome.storage.local.get(['searchOptions', 'searchQuery'], (result) => {
     if (result.searchOptions) {
       searchOptions = result.searchOptions;
       updateUI();
+    }
+    if (result.searchQuery) {
+      searchInput.value = result.searchQuery;
+      toggleClearButton();
+      triggerSearch(); // Trigger search with loaded query
     }
   });
 
@@ -29,9 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
     regexBtn.classList.toggle('active', searchOptions.useRegex);
   }
 
+  // Function to show/hide the clear button
+  function toggleClearButton() {
+    clearBtn.style.display = searchInput.value ? 'flex' : 'none';
+  }
+
   // Function to trigger a search
   function triggerSearch() {
     const query = searchInput.value;
+    chrome.storage.local.set({ searchQuery: query }); // Save query
+    toggleClearButton();
     if (query) {
       sendMessageToContentScript({ action: "search", query, options: searchOptions });
     } else {
@@ -57,6 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   searchInput.addEventListener('input', triggerSearch);
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    triggerSearch();
+    searchInput.focus();
+  });
   
   prevBtn.addEventListener('click', () => sendMessageToContentScript({ action: "previous" }));
   nextBtn.addEventListener('click', () => sendMessageToContentScript({ action: "next" }));
