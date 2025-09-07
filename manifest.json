@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "RegEx Finder",
+  "version": "1.0",
+  "description": "一個支援正則表達式、區分大小寫和全詞匹配的網頁尋找工具。",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "RegEx Finder"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["mark.min.js", "content.js"]
+    }
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "Command+Shift+F"
+      },
+      "description": "打開 RegEx Finder"
+    }
+  }
+}
