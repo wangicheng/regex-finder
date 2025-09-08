@@ -2,30 +2,51 @@ const marker = new Mark(document.body);
 let matches = [];
 let currentIndex = -1;
 
-function injectHighlightStyles() {
+const DEFAULT_STYLES = {
+  highlightColor: 'yellow',
+  currentMatchColor: 'orange',
+  currentMatchOutlineColor: '#A04000' // Default outline color
+};
+
+function applyStylesFromStorage() {
+  chrome.storage.sync.get(DEFAULT_STYLES, (settings) => {
+    updateDynamicStyles(settings);
+  });
+}
+
+function updateDynamicStyles(settings) {
   const styleId = 'regex-finder-styles';
-  if (document.getElementById(styleId)) {
-    return;
+  let styleElement = document.getElementById(styleId);
+
+  if (!styleElement) {
+    styleElement = document.createElement('style');
+    styleElement.id = styleId;
+    document.head.appendChild(styleElement);
   }
 
-  const style = document.createElement('style');
-  style.id = styleId;
-  style.textContent = `
+  // The outline color is now dynamic based on user settings.
+  styleElement.textContent = `
     mark {
-      background-color: yellow !important;
+      background-color: ${settings.highlightColor} !important;
       color: black !important;
       padding: 1px 0 !important;
     }
 
     mark.current-match {
-      background-color: orange !important;
-      outline: 1px solid #A04000 !important;
+      background-color: ${settings.currentMatchColor} !important;
+      outline: 1px solid ${settings.currentMatchOutlineColor} !important;
     }
   `;
-  document.head.appendChild(style);
 }
 
-injectHighlightStyles();
+applyStylesFromStorage();
+
+// Listen for changes to any of the color settings.
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'sync' && (changes.highlightColor || changes.currentMatchColor || changes.currentMatchOutlineColor)) {
+        applyStylesFromStorage();
+    }
+});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "search") {
@@ -73,7 +94,6 @@ function handleSearch(query, options, sendResponse) {
         sendResponse({ count: matches.length, currentIndex: currentIndex !== -1 ? 1 : 0 });
       };
 
-      // If "Match Whole Word" is ON, we ALWAYS use a regex approach for reliability.
       if (options.wholeWord || options.useRegex) {
         if (!options.useRegex) {
           query = RegExp.escape(query);
@@ -90,7 +110,6 @@ function handleSearch(query, options, sendResponse) {
           sendResponse({ count: 0 });
         }
       } else {
-        // If both are OFF, perform a simple substring search.
         marker.mark(query, {
           caseSensitive: options.caseSensitive,
           done: doneCallback

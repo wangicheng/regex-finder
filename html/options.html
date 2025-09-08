@@ -2,18 +2,91 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>RegEx Finder 設定</title>
+  <title>RegEx Finder Settings</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 600px; }
-    button { font-size: 16px; padding: 8px 15px; }
+    body { 
+      font-family: sans-serif; 
+      padding: 10px 25px; 
+      max-width: 600px; 
+      background-color: #f9f9f9;
+    }
+    h1, h2 {
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+    button { 
+      font-size: 14px; 
+      padding: 8px 15px; 
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fff;
+      margin-right: 10px;
+    }
+    button:hover {
+      background-color: #f0f0f0;
+    }
+    .settings-section {
+      margin-top: 25px;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+    }
+    .color-picker-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    label {
+      min-width: 220px;
+    }
+    input[type="color"] {
+      width: 60px;
+      height: 30px;
+      border: 1px solid #ccc;
+      padding: 2px;
+      cursor: pointer;
+    }
+    #statusMessage {
+      margin-top: 15px;
+      font-style: italic;
+      color: #28a745;
+    }
   </style>
 </head>
 <body>
-  <h1>RegEx Finder 設定</h1>
-  <p>
-    要修改此擴充功能的快捷鍵 (預設為 <strong>Ctrl+Shift+F</strong>)，請點擊下方按鈕前往 Chrome 的快捷鍵設定頁面。
-  </p>
-  <button id="shortcutsBtn">前往快捷鍵設定</button>
+  <h1>RegEx Finder Settings</h1>
+
+  <div class="settings-section">
+    <h2>Highlight Colors</h2>
+    <div class="color-picker-group">
+      <label for="highlightColor">Standard Highlight Color:</label>
+      <input type="color" id="highlightColor" value="#ffff00">
+    </div>
+    <div class="color-picker-group">
+      <label for="currentMatchColor">Current Match Background Color:</label>
+      <input type="color" id="currentMatchColor" value="#ffa500">
+    </div>
+    <div class="color-picker-group">
+      <label for="currentMatchOutlineColor">Current Match Outline Color:</label>
+      <input type="color" id="currentMatchOutlineColor" value="#A04000">
+    </div>
+    <div>
+      <button id="saveButton">Save Colors</button>
+      <button id="resetButton">Reset to Defaults</button>
+    </div>
+    <div id="statusMessage"></div>
+  </div>
+
+  <div class="settings-section">
+    <h2>Keyboard Shortcuts</h2>
+    <p>
+      To modify the keyboard shortcuts for this extension (default: <strong>Ctrl+Shift+F</strong>), please click the button below.
+    </p>
+    <button id="shortcutsBtn">Go to Shortcut Settings</button>
+  </div>
+  
   <script src="../js/options.js"></script>
 </body>
 </html>
