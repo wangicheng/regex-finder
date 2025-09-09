@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>RegEx Finder Settings</title>
+  <style id="dynamic-preview-styles"></style>
   <style>
     body { 
       font-family: sans-serif; 
@@ -57,6 +58,18 @@
       font-style: italic;
       color: #67d86b; /* A brighter green for better visibility on dark background */
     }
+    .preview-container {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #3c3c3c;
+      border-radius: 4px;
+      text-align: center;
+    }
+    #previewText {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -76,6 +89,11 @@
       <label for="currentMatchOutlineColor">Current Match Outline Color:</label>
       <input type="color" id="currentMatchOutlineColor" value="#A04000">
     </div>
+    
+    <div class="preview-container">
+      <span id="previewText">R<mark data-markjs="true" class="current-match">e</mark>g<mark data-markjs="true">E</mark>x Find<mark data-markjs="true">e</mark>r</span>
+    </div>
+
     <div>
       <button id="saveButton">Save Colors</button>
       <button id="resetButton">Reset to Defaults</button>
