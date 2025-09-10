@@ -116,7 +116,11 @@ function handleSearch(query, options, sendResponse) {
           matches.sort((a, b) => {
             const rectA = a.getBoundingClientRect();
             const rectB = b.getBoundingClientRect();
-            return rectA.top - rectB.top;
+            const topDiff = rectA.top - rectB.top;
+            if (topDiff !== 0) {
+              return topDiff;
+            }
+            return rectA.left - rectB.left;
           });
 
           currentIndex = matches.length > 0 ? 0 : -1;
