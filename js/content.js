@@ -55,17 +55,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     marker.unmark();
     matches = [];
     currentIndex = -1;
+    chrome.storage.local.set({ searchState: { count: 0, currentIndex: -1 } });
     sendResponse({ count: 0 });
   } else if (message.action === "next") {
     if (matches.length > 0) {
       currentIndex = (currentIndex + 1) % matches.length;
       scrollToElement(matches[currentIndex]);
+      chrome.storage.local.set({ searchState: { count: matches.length, currentIndex: currentIndex } });
       sendResponse({ count: matches.length, currentIndex: currentIndex + 1 });
     }
   } else if (message.action === "previous") {
     if (matches.length > 0) {
       currentIndex = (currentIndex - 1 + matches.length) % matches.length;
       scrollToElement(matches[currentIndex]);
+      chrome.storage.local.set({ searchState: { count: matches.length, currentIndex: currentIndex } });
       sendResponse({ count: matches.length, currentIndex: currentIndex + 1 });
     }
   }
@@ -121,6 +124,9 @@ function handleSearch(query, options, sendResponse) {
           if (currentIndex !== -1) {
             scrollToElement(matches[currentIndex]);
           }
+
+          const searchState = { count: matches.length, currentIndex: currentIndex };
+          chrome.storage.local.set({ searchState });
 
           sendResponse({ count: matches.length, currentIndex: currentIndex !== -1 ? 1 : 0 });
         },

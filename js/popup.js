@@ -14,9 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     wholeWord: false,
     useRegex: false
   };
-
-  // Load saved settings and query
-  chrome.storage.local.get(['searchOptions', 'searchQuery'], (result) => {
+  // Load saved settings, query, and search state
+  chrome.storage.local.get(['searchOptions', 'searchQuery', 'searchState'], (result) => {
     if (result.searchOptions) {
       searchOptions = result.searchOptions;
       updateUI();
@@ -24,7 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (result.searchQuery) {
       searchInput.value = result.searchQuery;
       toggleClearButton();
-      triggerSearch(); // Trigger search with loaded query
+    }
+    // Restore the last search count display
+    if (result.searchState) {
+      if (result.searchState.count > 0) {
+        const uiIndex = result.searchState.currentIndex + 1;
+        resultsCountDiv.textContent = `${ uiIndex }/${result.searchState.count} matches`;
+      } else if (result.searchState.count === 0) {
+        resultsCountDiv.textContent = 'No results';
+      }
     }
   });
 
@@ -97,7 +104,7 @@ async function sendMessageToContentScript(message) {
       if (chrome.runtime.lastError) { /* Handle error */ return; }
       const resultsCountDiv = document.getElementById('resultsCount');
       if (response && response.count > 0) {
-        resultsCountDiv.textContent = `${response.currentIndex}/${response.count} matches`;
+        resultsCountDiv.textContent = `${ response.currentIndex }/${response.count} matches`;
       } else if (response && response.count === 0) {
         resultsCountDiv.textContent = 'No results';
       } else {
