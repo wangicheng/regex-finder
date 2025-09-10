@@ -75,30 +75,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function handleSearch(query, options, sendResponse) {
   marker.unmark({
     done: () => {
-      const doneCallback = (totalCount) => {
-        const allFoundElements = Array.from(document.querySelectorAll('mark'));
-        const visibleMatches = allFoundElements.filter(el => el.offsetParent !== null);
-        const invisibleMatches = allFoundElements.filter(el => el.offsetParent === null);
+      const markOptions = {
+        done: (totalCount) => {
+          const allFoundElements = Array.from(document.querySelectorAll('mark'));
+          const visibleMatches = allFoundElements.filter(el => el.offsetParent !== null);
+          const invisibleMatches = allFoundElements.filter(el => el.offsetParent === null);
 
-        invisibleMatches.forEach(el => {
-          el.replaceWith(...el.childNodes);
-        });
+          invisibleMatches.forEach(el => {
+            el.replaceWith(...el.childNodes);
+          });
 
-        matches = visibleMatches;
+          matches = visibleMatches;
 
-        matches.sort((a, b) => {
-          const rectA = a.getBoundingClientRect();
-          const rectB = b.getBoundingClientRect();
-          return rectA.top - rectB.top;
-        });
+          matches.sort((a, b) => {
+            const rectA = a.getBoundingClientRect();
+            const rectB = b.getBoundingClientRect();
+            return rectA.top - rectB.top;
+          });
 
-        currentIndex = matches.length > 0 ? 0 : -1;
+          currentIndex = matches.length > 0 ? 0 : -1;
 
-        if (currentIndex !== -1) {
-          scrollToElement(matches[currentIndex]);
-        }
-        
-        sendResponse({ count: matches.length, currentIndex: currentIndex !== -1 ? 1 : 0 });
+          if (currentIndex !== -1) {
+            scrollToElement(matches[currentIndex]);
+          }
+          
+          sendResponse({ count: matches.length, currentIndex: currentIndex !== -1 ? 1 : 0 });
+        },
+        exclude: [
+          "textarea",
+          "input",
+          "script",
+          "style"
+        ]
       };
 
       if (options.wholeWord || options.useRegex) {
@@ -111,16 +119,14 @@ function handleSearch(query, options, sendResponse) {
         try {
           const flags = 'g' + (options.caseSensitive ? '' : 'i');
           const regex = new RegExp(query, flags);
-          marker.markRegExp(regex, { done: doneCallback });
+          marker.markRegExp(regex, markOptions);
         } catch (e) {
           console.error("Invalid Regex:", e);
           sendResponse({ count: 0 });
         }
       } else {
-        marker.mark(query, {
-          caseSensitive: options.caseSensitive,
-          done: doneCallback
-        });
+        markOptions.caseSensitive = options.caseSensitive;
+        marker.mark(query, markOptions);
       }
     }
   });
