@@ -43,9 +43,9 @@ applyStylesFromStorage();
 
 // Listen for changes to any of the color settings.
 chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'sync' && (changes.highlightColor || changes.currentMatchColor || changes.currentMatchOutlineColor)) {
-        applyStylesFromStorage();
-    }
+  if (namespace === 'sync' && (changes.highlightColor || changes.currentMatchColor || changes.currentMatchOutlineColor)) {
+    applyStylesFromStorage();
+  }
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -92,7 +92,7 @@ function handleSearch(query, options, sendResponse) {
               style.visibility !== 'hidden' &&
               style.opacity !== '0';
           }
-          
+
           const visibleMatches = [];
           const invisibleMatches = [];
 
@@ -121,7 +121,7 @@ function handleSearch(query, options, sendResponse) {
           if (currentIndex !== -1) {
             scrollToElement(matches[currentIndex]);
           }
-          
+
           sendResponse({ count: matches.length, currentIndex: currentIndex !== -1 ? 1 : 0 });
         },
         exclude: [

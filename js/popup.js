@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerSearch();
     searchInput.focus();
   });
-  
+
   prevBtn.addEventListener('click', () => sendMessageToContentScript({ action: "previous" }));
   nextBtn.addEventListener('click', () => sendMessageToContentScript({ action: "next" }));
 
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   optionsBtn.addEventListener('click', () => {
     chrome.runtime.openOptionsPage();
   });
-  
+
   // Automatically focus the input field
   searchInput.focus();
 });
@@ -97,11 +97,11 @@ async function sendMessageToContentScript(message) {
       if (chrome.runtime.lastError) { /* Handle error */ return; }
       const resultsCountDiv = document.getElementById('resultsCount');
       if (response && response.count > 0) {
-         resultsCountDiv.textContent = `${response.currentIndex}/${response.count} matches`;
+        resultsCountDiv.textContent = `${response.currentIndex}/${response.count} matches`;
       } else if (response && response.count === 0) {
-         resultsCountDiv.textContent = 'No results';
+        resultsCountDiv.textContent = 'No results';
       } else {
-         resultsCountDiv.textContent = '';
+        resultsCountDiv.textContent = '';
       }
     });
   }
