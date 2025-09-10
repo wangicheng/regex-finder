@@ -2,8 +2,7 @@
 
 A simple browser extension to find and highlight text on a page using regular expressions.
 
- 
-*(Note: You should replace this with a real screenshot of your extension)*
+<img width="334" height="190" alt="image" src="https://github.com/user-attachments/assets/90cc6130-2ba0-4dba-a7c1-cb90aaea0cc2" />
 
 ## Features
 
@@ -32,7 +31,6 @@ A simple browser extension to find and highlight text on a page using regular ex
 ## Installation
 
 ### From the Chrome Web Store (Coming Soon)
-*(You can update this section once it's published)*
 
 1.  Visit the [Regex Finder page on the Chrome Web Store](link-to-your-extension).
 2.  Click "Add to Chrome".
