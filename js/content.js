@@ -78,8 +78,31 @@ function handleSearch(query, options, sendResponse) {
       const markOptions = {
         done: (totalCount) => {
           const allFoundElements = Array.from(document.querySelectorAll('mark'));
-          const visibleMatches = allFoundElements.filter(el => el.offsetParent !== null);
-          const invisibleMatches = allFoundElements.filter(el => el.offsetParent === null);
+
+          function isElementVisible(el) {
+            // Fast check: `offsetParent` is null if the element or an ancestor has `display: none`.
+            if (el.offsetParent === null) {
+              return false;
+            }
+
+            const style = window.getComputedStyle(el);
+
+            // Deeper check for other CSS properties that hide elements.
+            return style.display !== 'none' &&
+              style.visibility !== 'hidden' &&
+              style.opacity !== '0';
+          }
+          
+          const visibleMatches = [];
+          const invisibleMatches = [];
+
+          for (const el of allFoundElements) {
+            if (isElementVisible(el)) {
+              visibleMatches.push(el);
+            } else {
+              invisibleMatches.push(el);
+            }
+          }
 
           invisibleMatches.forEach(el => {
             el.replaceWith(...el.childNodes);
