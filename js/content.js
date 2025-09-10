@@ -85,6 +85,13 @@ function handleSearch(query, options, sendResponse) {
         });
 
         matches = visibleMatches;
+
+        matches.sort((a, b) => {
+          const rectA = a.getBoundingClientRect();
+          const rectB = b.getBoundingClientRect();
+          return rectA.top - rectB.top;
+        });
+
         currentIndex = matches.length > 0 ? 0 : -1;
 
         if (currentIndex !== -1) {
